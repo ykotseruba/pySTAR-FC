@@ -21,7 +21,7 @@ class DeepGazeII:
         new_saver.restore(self.sess, check_point)
 
 
-    def compute_saliency(self, img):
+    def compute_saliency(self, img=None):
         self.img = img.copy()
         self.centerbias_data = np.zeros([1, self.img.shape[0], self.img.shape[1], 1], dtype=np.float32)
 

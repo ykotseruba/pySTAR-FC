@@ -2,6 +2,7 @@ import numpy as np
 import time
 import math
 import cv2
+from PIL import Image
 
 class CentralAttentionalMap:
     def __init__(self, h, w, settings):
@@ -10,12 +11,14 @@ class CentralAttentionalMap:
         self.settings = settings
         self.centralMask = None
         self.centralMap = None
+        self.cv2pil = False
         if 'DeepGazeII' in settings.CentralSalAlgorithm:
             from DeepGazeII import DeepGazeII
             self.buSal = DeepGazeII()
         if 'SALICONtf' in settings.CentralSalAlgorithm:
             from SALICONtf import SALICONtf
-            self.buSal = SALICONtf()
+            self.buSal = SALICONtf(weights='contrib/SALICONtf/models/model_lr0.01_loss_crossentropy.h5')
+            self.cv2pil = True
         self.initCentralMask()
 
     def initCentralMask(self):
@@ -35,8 +38,13 @@ class CentralAttentionalMap:
 
 
     def centralDetection(self, view):
+        
+        if self.cv2pil:
+            view = Image.fromarray((view[:, :, ::-1]*255).astype(np.uint8)) #convert image from cv2 to PIL format
+        else:
+            view *= 255
         #SALICON works on images with range [0, 255]
-        self.centralMap = self.buSal.compute_saliency(view*255)
+        self.centralMap = self.buSal.compute_saliency(img=view)
         cv2.normalize(self.centralMap, self.centralMap, 0, 1, cv2.NORM_MINMAX)
 
     def maskCentralDetection(self):
