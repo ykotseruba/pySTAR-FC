@@ -1,6 +1,6 @@
 # pySTAR-FC
 pySTAR-FC is an application for predicting human fixation locations on arbitrary static images.
-More details on the algorithm and results can be found in the paper ["Saccade Sequence Prediction: Beyond Static Saliency Maps"](https://arxiv.org/pdf/1711.10959.pdf).
+More details on the algorithm and results can be found in our CVPR'18 paper ["Active Fixation Control to Predict Saccade Sequences"](http://openaccess.thecvf.com/content_cvpr_2018/papers/Wloka_Active_Fixation_Control_CVPR_2018_paper.pdf).
 
 ## Getting Started
 
