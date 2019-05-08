@@ -2,7 +2,6 @@ import numpy as np
 import time
 import math
 import cv2
-from DeepGazeII import DeepGazeII
 
 class CentralAttentionalMap:
     def __init__(self, h, w, settings):
@@ -12,8 +11,11 @@ class CentralAttentionalMap:
         self.centralMask = None
         self.centralMap = None
         if 'DeepGazeII' in settings.CentralSalAlgorithm:
+            from DeepGazeII import DeepGazeII
             self.buSal = DeepGazeII()
-
+        if 'SALICONtf' in settings.CentralSalAlgorithm:
+            from SALICONtf import SALICONtf
+            self.buSal = SALICONtf()
         self.initCentralMask()
 
     def initCentralMask(self):

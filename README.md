@@ -45,6 +45,7 @@ If the `nvidia-docker` install fails due to docker version mismatch, install the
 * cv2
 * DeepGazeII
 * ICF
+* SALICONtf
 
 ```
 pip3 install numpy scipy matplotlib opencv-python pycuda tensorflow-gpu==1.4.0

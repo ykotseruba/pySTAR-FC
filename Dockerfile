@@ -1,4 +1,5 @@
 FROM nvidia/cuda:8.0-cudnn6-devel
+#FROM tensorflow/tensorflow:1.13.0rc1-gpu-py3
 
 ################################################################################
 # Prerequisites
@@ -11,11 +12,10 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
 
 # HACK: should install from requirements.txt file instead.
 RUN pip3 install --upgrade pip
-RUN pip3 install numpy scipy matplotlib opencv-python && \
-    pip3 install pycuda tensorflow-gpu==1.4.0
+RUN pip3 install numpy scipy matplotlib opencv-python 
+RUn pip3 install pycuda tensorflow-gpu==1.13.0rc1
 
 ENV STARFCPY_ROOT="/opt/STAR-FC"
+ENV PYTHONPATH=$STARFCPY_ROOT/contrib/SALICONtf/src/:$PYTHONPATH
 WORKDIR $STARFCPY_ROOT
-#RUN git clone https://github.com/NVIDIA/nccl.git && cd nccl && make && make install && cd .. && rm -rf nccl
 
-WORKDIR /workspace
