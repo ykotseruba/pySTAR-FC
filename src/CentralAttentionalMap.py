@@ -40,11 +40,11 @@ class CentralAttentionalMap:
     def centralDetection(self, view):
         
         if self.cv2pil:
-            view = Image.fromarray((view[:, :, ::-1]*255).astype(np.uint8)) #convert image from cv2 to PIL format
+            view_img = Image.fromarray((view[:, :, ::-1]*255).astype(np.uint8)) #convert image from cv2 to PIL format
         else:
-            view *= 255
+            view_img = view*255
         #SALICON works on images with range [0, 255]
-        self.centralMap = self.buSal.compute_saliency(img=view)
+        self.centralMap = self.buSal.compute_saliency(img=view_img)
         cv2.normalize(self.centralMap, self.centralMap, 0, 1, cv2.NORM_MINMAX)
 
     def maskCentralDetection(self):

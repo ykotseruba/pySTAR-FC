@@ -19,6 +19,7 @@ class ICF:
         self.sess = tf.Session()
         new_saver.restore(self.sess, check_point)
 
+
     def loadImage(self, img):
         self.img = img.copy()
         #centerbias = zoom(self.centerbias_template, (self.img.shape[0]/1024, self.img.shape[1]/1024), order=0, mode='nearest')
