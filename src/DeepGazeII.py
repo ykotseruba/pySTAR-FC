@@ -14,8 +14,6 @@ class DeepGazeII:
         self.input_tensor = tf.get_collection('input_tensor')[0]
         self.centerbias_tensor = tf.get_collection('centerbias_tensor')[0]
         self.log_density = tf.get_collection('log_density')[0]
-        self.log_density_wo_centerbias = tf.get_collection('log_density_wo_centerbias')[0]
-
 
         self.sess = tf.Session()
         new_saver.restore(self.sess, check_point)
@@ -23,13 +21,16 @@ class DeepGazeII:
 
     def compute_saliency(self, img=None):
         self.img = img.copy()
+
         self.centerbias_data = np.zeros([1, self.img.shape[0], self.img.shape[1], 1], dtype=np.float32)
 
         image_data = self.img[np.newaxis, :, :, :]
+        print(self.input_tensor)
         log_density_prediction = self.sess.run(self.log_density, {
             self.input_tensor: image_data,
             self.centerbias_tensor: self.centerbias_data,
         })
+
         log_density = log_density_prediction[0, :, :, 0]
         self.sm = np.exp(log_density)
         self.sm /= np.sum(self.sm)

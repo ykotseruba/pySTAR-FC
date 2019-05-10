@@ -3,6 +3,7 @@ import numpy as np
 from scipy.ndimage import zoom
 from scipy.misc import logsumexp, imsave
 import cv2
+import time
 
 class ICF:
     def __init__(self):
@@ -14,7 +15,6 @@ class ICF:
         self.input_tensor = tf.get_collection('input_tensor')[0]
         self.centerbias_tensor = tf.get_collection('centerbias_tensor')[0]
         self.log_density = tf.get_collection('log_density')[0]
-        self.log_density_wo_centerbias = tf.get_collection('log_density_wo_centerbias')[0]
 
         self.sess = tf.Session()
         new_saver.restore(self.sess, check_point)
