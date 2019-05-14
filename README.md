@@ -55,7 +55,7 @@ install pyCUDA library:
 
 If you are getting 'pycuda._driver.Error: cuInit failed: unknown error' when running the code, try rebooting the machine
 
-### Running STAR-FC
+## Running STAR-FC
 
 Below are instructions on how to run a demo of STAR-FC on a single image (```Yarbus_scaled.jpg``` in ```images``` folder).
 
