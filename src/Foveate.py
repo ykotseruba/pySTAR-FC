@@ -296,10 +296,11 @@ class Foveate:
         ec = 180*np.arctan(eradius/self.viewDist)/math.pi
 
         eyefreqCones = self.epsilon2/(self.alpha*(ec + self.epsilon2))*math.log(1/self.CTO)
-        eyefreqCones = np.power(eyefreqCones, 0.3)
+        #eyefreqCones = np.power(eyefreqCones, 0.3)
 
         maxVal = np.amax(eyefreqCones)
         minVal = np.amin(eyefreqCones)
+
         eyefreqCones = (eyefreqCones-minVal)/(maxVal-minVal)
 
         #pyrlevel is a fractional level of the pyramid which must be used at each pixel
