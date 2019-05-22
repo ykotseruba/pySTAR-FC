@@ -7,3 +7,5 @@ Keras==2.2.4
 Pillow==5.4.1
 selenium==3.141.0
 scikit_learn==0.20.2
+glfw==1.8.1
+PyOpenGL==3.1.0

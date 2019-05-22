@@ -12,8 +12,12 @@ class Eye:
         self.viewFov = None
 
         if self.foveate:
-            from Foveate import Foveate
-            self.fov = Foveate(self.env.dotPitch, self.settings.viewDist, self.settings.rodsAndCones)
+            from Foveate_GP_OGL import Foveate_GP_OGL
+            self.fov = Foveate_GP_OGL(dotPitch = -1, viewDist = settings.viewDist)
+
+            #uncomment to use the pyCUDA code
+            #from Foveate import Foveate
+            #self.fov = Foveate(self.env.dotPitch, self.settings.viewDist, self.settings.rodsAndCones)
 
     def reset(self):
         self.height = self.env.getHeight()
@@ -28,14 +32,15 @@ class Eye:
             self.gazeCoords = np.array([self.height/2, self.width/2], dtype=np.int32)
 
         self.view = self.env.getEyeView(self.gazeCoords)
-
         self.foveateView()
 
     def foveateView(self):
 
         if self.foveate:
+            self.fov.dotPitch = self.env.dotPitch
             self.fov.foveate(self.view, np.array([self.height/2, self.width/2],dtype=np.int32))
             self.viewFov = self.fov.imgFov
+
         else:
             self.viewFov = self.view
 

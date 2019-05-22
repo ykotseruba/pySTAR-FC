@@ -39,6 +39,7 @@ nvidia-docker run -it \
   --name starfcpy \
   -h starfcpy \
   -v ${PROJECT_ROOT}:${STARFCPY_ROOT} \
+  -v /dev/input \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DISPLAY=$DISPLAY \
   -w ${STARFCPY_ROOT} \
