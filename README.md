@@ -10,7 +10,7 @@ More details on the algorithm and results can be found in our CVPR'18 paper ["Ac
 
 We tested this setup with NVIDIA Titan X on Ubuntu 16.04 with Python 3.5.
 
-#### Docker (stronlgy recommended)
+#### Docker (strongly recommended)
 
 Install [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) following the instructions in the official repository. There are also good resources elsewhere that describe Docker installation in more detail, for example [this one for Ubuntu 16.04](https://chunml.github.io/ChunML.github.io/project/Installing-NVIDIA-Docker-On-Ubuntu-16.04/).
 
