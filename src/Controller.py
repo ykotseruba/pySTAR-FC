@@ -113,7 +113,7 @@ class Controller:
             t0 = time.time()
             self.fixHistMap.decayFixations()
             t_ior = time.time() - t0
-            print('[IOR] Time elapsed {:0.03f}'.format(t_priority))
+            print('[IOR] Time elapsed {:0.03f}'.format(t_ior))
 
             t0 = time.time()
             self.fixHistMap.saveFixationCoords(prevGazeCoords)
