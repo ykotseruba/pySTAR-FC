@@ -55,7 +55,7 @@ class Environment:
             self.dotPitch = self.widthm/self.width;
             self.settings.pix2deg = self.width/self.settings.inputSizeDeg;
         elif self.dotPitchMethod == 'FROM_DEG2PIX':
-            self.settings.inputSizeDeg = self.width/pix2deg;
+            self.settings.inputSizeDeg = self.width/self.settings.pix2deg;
             self.widthm = 2*self.settings.viewDist*math.tan(self.settings.inputSizeDeg/2)
             self.dotPitch = self.widthm/self.width
         else:
