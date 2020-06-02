@@ -28,7 +28,7 @@ class Eye:
 
     def viewScene(self):
 
-        if self.gazeCoords[0] == -1 and self.gazeCoords[1] == -1:
+        if np.all(np.equal(self.gazeCoords, [-1, -1])):
             self.gazeCoords = np.array([self.height/2, self.width/2], dtype=np.int32)
 
         self.view = self.env.getEyeView(self.gazeCoords)
