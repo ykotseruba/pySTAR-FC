@@ -3,7 +3,7 @@ import numpy as np
 class Eye:
     def __init__(self, settings, env):
         self.settings = settings
-        self.gazeCoords = np.zeros((1, 2), dtype=np.int32)
+        self.gazeCoords = -np.ones((1, 2), dtype=np.int32)
         self.foveate = settings.foveate
         self.env = env
         self.height = env.height
@@ -28,7 +28,7 @@ class Eye:
 
     def viewScene(self):
 
-        if not np.all(self.gazeCoords):
+        if self.gazeCoords[0] == -1 and self.gazeCoords[1] == -1:
             self.gazeCoords = np.array([self.height/2, self.width/2], dtype=np.int32)
 
         self.view = self.env.getEyeView(self.gazeCoords)
