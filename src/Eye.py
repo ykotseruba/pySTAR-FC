@@ -1,6 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
-
 
 class Eye:
     def __init__(self, settings, env):

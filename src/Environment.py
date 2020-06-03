@@ -62,7 +62,6 @@ class Environment:
             raise ValueError('Unrecognized option for updateDotPitch!')
 
     def getEyeView(self, gazeCoords):
-        print('getEyeView', gazeCoords)
         return self.scenePadded[gazeCoords[0]:gazeCoords[0]+self.height, gazeCoords[1]:gazeCoords[1]+self.width, :]
 
     def drawFixation(self, newFix, prevFix):
