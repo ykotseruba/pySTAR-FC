@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 class Eye:
     def __init__(self, settings, env):
@@ -27,8 +29,9 @@ class Eye:
         self.viewFov = None
 
     def viewScene(self):
-
-        if self.gazeCoords[0] == -1 and self.gazeCoords[1] == -1:
+        # if gazeCoords are not initialized (i.e. equal to [-1,1]) automatically set the first
+        # fixation at the center of the image
+        if np.all(np.equal(self.gazeCoords, [-1, -1])):
             self.gazeCoords = np.array([self.height/2, self.width/2], dtype=np.int32)
 
         self.view = self.env.getEyeView(self.gazeCoords)
@@ -38,7 +41,7 @@ class Eye:
 
         if self.foveate:
             self.fov.dotPitch = self.env.dotPitch
-            self.fov.foveate(self.view, np.array([self.height/2, self.width/2],dtype=np.int32))
+            self.fov.foveate(self.view, np.array([self.height/2, self.width/2], dtype=np.int32))
             self.viewFov = self.fov.imgFov
 
         else:

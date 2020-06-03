@@ -35,7 +35,7 @@ class Environment:
 
         self.sceneWithFixations = self.scene.astype(np.float32).copy()
         self.height, self.width, self.depth = self.scene.shape
-        self.prevFix = np.array([self.height/2, self.width/2], dtype=np.int32)
+        #self.prevFix = np.array([self.height/2, self.width/2], dtype=np.int32)
 
         self.padStaticStimulus()
         self.updateDotPitch()
@@ -62,10 +62,11 @@ class Environment:
             raise ValueError('Unrecognized option for updateDotPitch!')
 
     def getEyeView(self, gazeCoords):
+        print('getEyeView', gazeCoords)
         return self.scenePadded[gazeCoords[0]:gazeCoords[0]+self.height, gazeCoords[1]:gazeCoords[1]+self.width, :]
 
-    def drawFixation(self, newFix):
-        cv2.line(self.sceneWithFixations, (self.prevFix[1], self.prevFix[0]), (newFix[1], newFix[0]),(62, 62, 250), 2, cv2.LINE_AA)
-        cv2.circle(self.sceneWithFixations, (self.prevFix[1], self.prevFix[0]), 1, (62, 62, 250), cv2.LINE_AA)
+    def drawFixation(self, newFix, prevFix):
+        cv2.line(self.sceneWithFixations, (prevFix[1], prevFix[0]), (newFix[1], newFix[0]),(62, 62, 250), 2, cv2.LINE_AA)
+        cv2.circle(self.sceneWithFixations, (prevFix[1], prevFix[0]), 1, (62, 62, 250), cv2.LINE_AA)
         cv2.circle(self.sceneWithFixations, (newFix[1], newFix[0]), 1, (62, 62, 250), cv2.LINE_AA)
-        self.prevFix = newFix.copy();
+        #self.prevFix = newFix.copy();

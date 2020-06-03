@@ -14,7 +14,7 @@ class FixationHistoryMap:
         self.fixHistMap = np.zeros((self.height, self.width), dtype=np.float32)
         self.fixHistMapPadded = np.zeros((self.hPadded, self.wPadded), dtype=np.float32)
 
-        self.lastFixation = np.array([self.height/2, self.width/2], dtype=np.int32)
+        self.lastFixation = None
         self.fixationList = np.empty((0, 2), dtype=np.int32)
 
 
@@ -35,7 +35,11 @@ class FixationHistoryMap:
         self.fixHistMapPadded = np.fmax(self.fixHistMapPadded, np.zeros((self.hPadded, self.wPadded)))
 
     def getFixationHistoryMap(self):
-        return self.fixHistMapPadded[self.lastFixation[0]:self.lastFixation[0]+self.height, self.lastFixation[1]:self.lastFixation[1]+self.width]
+        #when there is no history of fixations yet return map of 0s
+        if self.lastFixation is None:
+            return self.fixHistMap
+        else:
+            return self.fixHistMapPadded[self.lastFixation[0]:self.lastFixation[0]+self.height, self.lastFixation[1]:self.lastFixation[1]+self.width]
 
     def dumpFixationsToMat(self, savePath):
         fixationList = np.fliplr(self.fixationList).astype(np.float64) # flip array since save format is [horz_coord, vert_coord]

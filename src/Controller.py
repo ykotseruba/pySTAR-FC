@@ -81,10 +81,10 @@ class Controller:
             t0 = time.time()
             self.eye.viewScene()
             t_fov = time.time() - t0
-
+            print('[FOVEATE]', self.eye.gazeCoords)
             print('[FOVEATE] Time elapsed {:0.03f}'.format(t_fov))
 
-            prevGazeCoords = self.eye.gazeCoords
+            prevGazeCoords = self.eye.gazeCoords.copy()
 
             t0 = time.time()
             self.periphMap.computeBUSaliency(self.eye.viewFov)
@@ -101,6 +101,11 @@ class Controller:
             #self.conspMap.computeConspicuityMap(self.periphMap.periphMap, self.centralMap.centralMap) #this is not used anywhere, for now commenting out
 
             t0 = time.time()
+            self.fixHistMap.saveFixationCoords(prevGazeCoords)
+            t_save = time.time() - t0
+            print('[SaveFix] Time elapsed {:0.03f}'.format(t_save))
+
+            t0 = time.time()
             self.priorityMap.computeNextFixationDirection(self.periphMap.periphMap, self.centralMap.centralMap, self.fixHistMap.getFixationHistoryMap())
             t_priority = time.time() - t0
             print('[PriorityMap] Time elapsed {:0.03f}'.format(t_priority))
@@ -108,17 +113,12 @@ class Controller:
             print('PrevGazeCoords=[{}, {}]'.format(prevGazeCoords[0], prevGazeCoords[1]))
             self.eye.setGazeCoords(self.priorityMap.nextFixationDirection)
 
-            self.env.drawFixation(self.eye.gazeCoords.astype(np.int32))
+            self.env.drawFixation(self.eye.gazeCoords.astype(np.int32), prevGazeCoords)
 
             t0 = time.time()
             self.fixHistMap.decayFixations()
             t_ior = time.time() - t0
             print('[IOR] Time elapsed {:0.03f}'.format(t_ior))
-
-            t0 = time.time()
-            self.fixHistMap.saveFixationCoords(prevGazeCoords)
-            t_save = time.time() - t0
-            print('[SaveFix] Time elapsed {:0.03f}'.format(t_save))
 
             if self.settings.visualize:
                 t0 = time.time()
