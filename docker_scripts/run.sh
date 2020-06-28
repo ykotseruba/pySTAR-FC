@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# setup x auth environment for visual support
+XAUTH=$(mktemp /tmp/.docker.xauth.XXXXXXXXX)
+xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
+
 PROJECT_ROOT="$(cd "$(dirname "$0")"; cd ..; pwd)"
 STARFCPY_ROOT="/opt/STAR-FC"
 
@@ -34,14 +38,20 @@ if [ -z "$config_file_path" ]; then
     exit 1
 fi
 
+# -v /tmp/.X11-unix:/tmp/.X11-unix \
+
 xhost +local:starfcpy
 nvidia-docker run -it \
   --name starfcpy \
   -h starfcpy \
   -v ${PROJECT_ROOT}:${STARFCPY_ROOT} \
   -v /dev/input \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
   -e DISPLAY=$DISPLAY \
+  -e XAUTHORITY=$XAUTH \
+  -v $XAUTH:$XAUTH \
+  -env="DISPLAY" \
+  --volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
+  --net=host \
   -w ${STARFCPY_ROOT} \
   --rm \
   starfcpy python3 src/STAR_FC.py $vis_flag -c $config_file_path

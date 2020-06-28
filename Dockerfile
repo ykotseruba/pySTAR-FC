@@ -1,5 +1,4 @@
 FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
-#FROM tensorflow/tensorflow:1.13.0rc1-gpu-py3
 
 ENV STARFCPY_ROOT="/opt/STAR-FC"
 

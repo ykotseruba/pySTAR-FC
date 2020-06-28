@@ -1,4 +1,4 @@
-tensorflow_gpu==1.15
+tensorflow_gpu==1.13.1
 matplotlib==3.0.2
 numpy==1.16.1
 scipy==1.2.1
@@ -7,5 +7,5 @@ Keras==2.2.4
 Pillow==6.2.0
 selenium==3.141.0
 scikit_learn==0.20.2
-glfw==1.8.1
+glfw
 PyOpenGL==3.1.0
