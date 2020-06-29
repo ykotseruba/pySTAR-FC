@@ -41,7 +41,7 @@ fi
 # -v /tmp/.X11-unix:/tmp/.X11-unix \
 
 xhost +local:starfcpy
-nvidia-docker run -it \
+docker run -it \
   --name starfcpy \
   -h starfcpy \
   -v ${PROJECT_ROOT}:${STARFCPY_ROOT} \
