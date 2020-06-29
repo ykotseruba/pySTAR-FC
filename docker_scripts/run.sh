@@ -18,7 +18,9 @@ usage() {
 vis_flag=''
 config_file_path=''
 
-while getopts "h?vc:" opt; do
+GPU_DEVICE=0
+
+while getopts "h?vc:g:" opt; do
     case "$opt" in
         h|\?)
             usage
@@ -28,6 +30,7 @@ while getopts "h?vc:" opt; do
             ;;
         c)  config_file_path=$OPTARG
             ;;
+        g)  GPU_DEVICE=$OPTARG
         esac
 done
 shift "$((OPTIND-1))"
@@ -39,9 +42,9 @@ if [ -z "$config_file_path" ]; then
 fi
 
 # -v /tmp/.X11-unix:/tmp/.X11-unix \
-
 xhost +local:starfcpy
 nvidia-docker run -it \
+  --gpus "device=${GPU_DEVICE}" \
   --name starfcpy \
   -h starfcpy \
   -v ${PROJECT_ROOT}:${STARFCPY_ROOT} \
