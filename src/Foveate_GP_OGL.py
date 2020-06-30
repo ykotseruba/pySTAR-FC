@@ -94,7 +94,9 @@ class Foveate_GP_OGL:
         #creating the window
         if not self.visualize:
             glfw.window_hint(glfw.VISIBLE, glfw.FALSE) #we cannot create OpenGL context without some sort of window, so we just hide it if no visualization is needed
-    
+
+        # glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+        # glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 1)
         self.window = glfw.create_window(1024, 980, "foveated", None, None)
 
         if not self.window:
@@ -278,7 +280,9 @@ class Foveate_GP_OGL:
         self.run()
         self.getFovImage()
 
-
+def usage():
+    print('To run the program with defaults:')
+    print('python3 Foveate_GP_OGL.py -v -d 60')
 
 def main():
 
@@ -315,7 +319,7 @@ def main():
             outputDir = a
             saveOutput = True
 
-    fov_ogl = Foveate_GP_OGL(viewDist=viewDist, gazePosition=gazePosition)
+    fov_ogl = Foveate_GP_OGL(viewDist=viewDist, gazePosition=gazePosition, visualize=visualize)
 
     imageList = [f for f in listdir(inputDir) if any(f.endswith(ext) for ext in ['jpg', 'jpeg', 'bmp', 'png', 'gif']) ]
     

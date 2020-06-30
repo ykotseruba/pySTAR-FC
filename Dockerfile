@@ -11,7 +11,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
     libglib2.0-dev libsm6 \
     git wget\
     libglfw3-dev mesa-utils kmod
-
+    
 RUN apt-get install -y binutils
 
 #version="$(glxinfo | grep "OpenGL version string" | rev | cut -d" " -f1 | rev)"

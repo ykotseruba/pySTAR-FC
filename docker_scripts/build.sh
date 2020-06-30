@@ -11,5 +11,4 @@ fi
 
 PROJECT_ROOT="$(cd "$(dirname "$0")"; cd ..; pwd)"
 echo "Building starfcpy Docker image..."
-docker build --no-cache -t starfcpy .
-
+docker build -t starfcpy .
