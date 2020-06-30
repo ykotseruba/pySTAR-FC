@@ -9,10 +9,11 @@ STARFCPY_ROOT="/opt/STAR-FC"
 
 
 usage() {
-    echo "Usage: $0 [-v] -c <config_file_path>"
+    echo "Usage: $0 [-v] [-g 0] -c <config_file_path>"
     echo "Options:"
     echo "-v \t visualization on"
     echo "-c \t path to config file with extension .ini (see config_files for examples)"
+    echo "-g \t which GPU to run on (default 0)"
 }
 
 vis_flag=''
@@ -43,6 +44,7 @@ fi
 
 # -v /tmp/.X11-unix:/tmp/.X11-unix \
 xhost +local:starfcpy
+
 nvidia-docker run -it \
   --gpus "device=${GPU_DEVICE}" \
   --name starfcpy \
