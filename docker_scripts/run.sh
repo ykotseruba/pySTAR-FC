@@ -32,6 +32,7 @@ while getopts "h?vc:g:" opt; do
         c)  config_file_path=$OPTARG
             ;;
         g)  GPU_DEVICE=$OPTARG
+            ;;
         esac
 done
 shift "$((OPTIND-1))"
@@ -42,10 +43,10 @@ if [ -z "$config_file_path" ]; then
     exit 1
 fi
 
-# -v /tmp/.X11-unix:/tmp/.X11-unix \
+# 
 xhost +local:starfcpy
 
-nvidia-docker run -it \
+docker run -it \
   --gpus "device=${GPU_DEVICE}" \
   --name starfcpy \
   -h starfcpy \
@@ -55,6 +56,7 @@ nvidia-docker run -it \
   -e XAUTHORITY=$XAUTH \
   -v $XAUTH:$XAUTH \
   -env="DISPLAY" \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
   --volume="$HOME/.Xauthority:/root/.Xauthority:rw" \
   --net=host \
   -w ${STARFCPY_ROOT} \

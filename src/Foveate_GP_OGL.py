@@ -95,11 +95,11 @@ class Foveate_GP_OGL:
         if not self.visualize:
             glfw.window_hint(glfw.VISIBLE, glfw.FALSE) #we cannot create OpenGL context without some sort of window, so we just hide it if no visualization is needed
 
-        # glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
-        # glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 1)
+        #glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+        #glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 1)
         self.window = glfw.create_window(1024, 980, "foveated", None, None)
 
-        if not self.window:
+        if self.window is None:
             glfw.terminate()
             print('ERROR: Failed to create GLFW window!')
             return

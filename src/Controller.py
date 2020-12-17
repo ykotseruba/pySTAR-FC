@@ -24,6 +24,14 @@ class Controller:
         self.settings = settings
         self.imageList = []
 
+        self.periphMap=None
+        self.centralMap=None
+        self.conspMap=None
+        self.priorityMap=None
+        self.fixHistMap=None
+
+        self.model_setup_done = False
+
         #save results
         self.saveResults = False
         if self.settings.saveFix:
@@ -52,12 +60,19 @@ class Controller:
         else:
             self.env.loadStaticStimulus(imgPath)
         self.eye = Eye(self.settings, self.env)
-        self.periphMap = PeripheralAttentionalMap(self.env.height, self.env.width, self.settings)
-        self.centralMap = CentralAttentionalMap(self.env.height, self.env.width, self.settings)
+
+        if not self.model_setup_done:
+            self.periphMap = PeripheralAttentionalMap(self.env.height, self.env.width, self.settings)
+            self.centralMap = CentralAttentionalMap(self.env.height, self.env.width, self.settings)
+            self.model_setup_done = True
+        else:
+            self.periphMap.update(self.env.height, self.env.width, self.settings)
+            self.centralMap.update(self.env.height, self.env.width, self.settings)
+
+
         self.conspMap = ConspicuityMap(self.env.height, self.env.width, self.settings)
         self.priorityMap = PriorityMap(self.env.height, self.env.width, self.settings)
         self.fixHistMap = FixationHistoryMap(self.env.height, self.env.width, self.env.hPadded, self.env.wPadded, self.settings)
-
 
     #computes fixations for each image and each subject
     def run(self):

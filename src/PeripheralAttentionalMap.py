@@ -2,8 +2,6 @@ import numpy as np
 import math
 import cv2
 
-from AIM import AIM
-from ICF import ICF
 
 class PeripheralAttentionalMap:
 
@@ -15,11 +13,22 @@ class PeripheralAttentionalMap:
         self.periphMap = None
 
         if 'AIM' in settings.PeriphSalAlgorithm:
+            from AIM import AIM
             self.buSal = AIM(settings.AIMBasis)
         elif 'ICF' in settings.PeriphSalAlgorithm:
+            from ICF import ICF
             self.buSal = ICF()
 
         self.initPeripheralMask()
+
+
+    def update(self, h, w, settings):
+        self.settings = settings
+        self.height = h
+        self.width = w
+        self.salMap = None
+        self.periphMap = None
+        self.initPeripheralMask()        
 
     def initPeripheralMask(self):
         self.periphMask = np.zeros((self.height,self.width), np.uint8)

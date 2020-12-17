@@ -15,11 +15,19 @@ class CentralAttentionalMap:
         if 'DeepGazeII' in settings.CentralSalAlgorithm:
             from DeepGazeII import DeepGazeII
             self.buSal = DeepGazeII()
-        if 'SALICONtf' in settings.CentralSalAlgorithm:
+        elif 'SALICONtf' in settings.CentralSalAlgorithm:
             from SALICONtf import SALICONtf
             self.buSal = SALICONtf(weights='contrib/SALICONtf/models/model_lr0.01_loss_crossentropy.h5')
             self.cv2pil = True
         self.initCentralMask()
+
+    def update(self, h, w, settings):
+        self.height = h
+        self.width = w
+        self.settings = settings
+        self.centralMask = None
+        self.centralMap = None
+        self.initCentralMask()        
 
     def initCentralMask(self):
         self.centralMask = np.zeros((self.height,self.width), np.uint8)

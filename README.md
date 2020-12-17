@@ -8,7 +8,7 @@ More details on the algorithm and results can be found in our CVPR'18 paper ["Ac
 
 ### Installation
 
-We tested this setup with NVIDIA Titan X on Ubuntu 16.04 with Python 3.5.
+We tested this setup with NVIDIA Titan X on Ubuntu 16.04 and 20.04 with Python 3.5.
 
 #### Docker (strongly recommended)
 
@@ -30,7 +30,7 @@ NOTE: You will need to install the same GPU driver as in your system inside the 
 To run the container:
 
 ```
-sudo script/run -v -c <path_to_config_file>
+sudo docker_scripts/run.sh -v -c <path_to_config_file>
 ```
 There are only two command line options:
 * -v for visualization  (optional)
