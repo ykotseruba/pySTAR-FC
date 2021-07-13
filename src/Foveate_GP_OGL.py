@@ -76,14 +76,16 @@ fragment_shader = """
 #Geisler & Perry foveation
 class Foveate_GP_OGL:
 
-    def __init__(self, dotPitch = -1, viewDist = -1, gazePosition=(-1, -1), visualize = False):
+    def __init__(self, dotPitch = None, inputSizeDeg = None, pix2deg = None, viewDist = None, gazePosition=(-1, -1), visualize = False):
         
         self.dotPitch = dotPitch
+        self.inputSizeDeg = inputSizeDeg
+        self.pix2deg = pix2deg
         self.viewDist = viewDist
         self.gazePosition = gazePosition
         self.visualize = visualize
         self.pyrlevelCones = None
-
+        
         self.initGLFW()
         self.initBuffers()
 
@@ -171,16 +173,12 @@ class Foveate_GP_OGL:
             glBindRenderbuffer(GL_RENDERBUFFER, self.RBO)
             glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA, MAX_SIZE, MAX_SIZE)
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, self.RBO)
-
-
         
     #load image from array
     def loadImgFromArray(self, img = None):
         self.img = img.copy()
         self.img_height, self.img_width, self.channels = self.img.shape
-
         self.numLevels = 1+math.floor(math.log2(max(self.img_width, self.img_height)))
-
         if self.visualize:
             glfw.set_window_size(self.window, self.img_width, self.img_height)
         #self.updateTexture()
@@ -188,18 +186,20 @@ class Foveate_GP_OGL:
         if gazePosition[0] < 0:
             gazePosition = (self.img_height/2, self.img_width/2)
 
-        x, step = np.linspace(0, self.img_height-1, num=self.img_height, retstep=True, dtype=np.float32)
-        y, step = np.linspace(0, self.img_width-1, num=self.img_width, retstep=True, dtype=np.float32)
+        #x, step = np.linspace(0, self.img_height-1, num=self.img_height, retstep=True, dtype=np.float32)
+        #y, step = np.linspace(0, self.img_width-1, num=self.img_width, retstep=True, dtype=np.float32)
 
-        self.ix, self.iy = np.meshgrid(y, x, sparse=False, indexing='xy')
+        #self.ix, self.iy = np.meshgrid(y, x, sparse=False, indexing='xy')
 
-        self.updateGaze(gazePosition)
         self.updateTexture()
-
+        self.updateGaze(gazePosition)
+        self.updateDotPitch()
 
     #load image from file
     def loadImgFromFile(self, imgFilename='images/Yarbus_scaled.jpg'):
-        self.img = cv2.imread(imgFilename)
+        
+        img = cv2.imread(imgFilename, cv2.IMREAD_COLOR)
+        self.img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.img_height, self.img_width, self.channels = self.img.shape
 
         self.numLevels = 1+math.floor(math.log2(max(self.img_width, self.img_height)))
@@ -208,24 +208,38 @@ class Foveate_GP_OGL:
             glfw.set_window_size(self.window, self.img_width, self.img_height)
 
         if self.gazePosition[0] < 0:
-            gazePosition = (self.img_height/2, self.img_width/2)
+            gazePosition = (int(self.img_height/2), int(self.img_width/2))
         else:
             gazePosition = self.gazePosition
         
-        x, step = np.linspace(0, self.img_height-1, num=self.img_height, retstep=True, dtype=np.float32)
-        y, step = np.linspace(0, self.img_width-1, num=self.img_width, retstep=True, dtype=np.float32)
+        #x, step = np.linspace(0, self.img_height-1, num=self.img_height, retstep=True, dtype=np.float32)
+        #y, step = np.linspace(0, self.img_width-1, num=self.img_width, retstep=True, dtype=np.float32)
 
-        self.ix, self.iy = np.meshgrid(y, x, sparse=False, indexing='xy')
+        #self.ix, self.iy = np.meshgrid(y, x, sparse=False, indexing='xy')
 
-        #self.dotPitch = computeDotPitch(pix2deg=self.pix2deg, viewDist=self.viewDist, imgWidth=self.img_width)
-
-        self.updateGaze(gazePosition)
         self.updateTexture()
+        self.updateGaze(gazePosition)
+        self.updateDotPitch()
+
 
 
     def updateGaze(self, newGazePosition):
         self.gazePosition = newGazePosition
         glUniform2f(self.gazeParametersLoc, float(self.gazePosition[1]), self.img_height - float(self.gazePosition[0]))
+        
+
+    def updateDotPitch(self):
+        if self.dotPitch is None:
+            if self.inputSizeDeg is not None:
+                self.widthm = 2*self.viewDist*math.tan(self.inputSizeDeg/2)
+                self.dotPitch = self.widthm/self.img_width;
+                self.pix2deg = self.img_width/self.inputSizeDeg;
+            elif self.pix2deg is not None:
+                inputSizeDeg = self.img_width/self.pix2deg;
+                self.widthm = 2*self.settings.viewDist*math.tan(self.inputSizeDeg/2)
+                self.dotPitch = self.widthm/self.img_width
+            else:
+                raise ValueError('Cannot compute dotPitch! Provide inputSizeDeg or pix2deg.')
         glUniform3f(self.viewParametersLoc, float(self.dotPitch), float(self.viewDist), float(self.numLevels))
 
     def updateTexture(self):
@@ -233,7 +247,8 @@ class Foveate_GP_OGL:
 
         #img_data = np.array(list(self.img.getdata()), np.uint8)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self.img_width, self.img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, self.img)
-        glGenerateMipmap(GL_TEXTURE_2D);
+        glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST)
+        glGenerateMipmap(GL_TEXTURE_2D)
 
     def saveFovImage(self, filename):
         if self.visualize: 
@@ -252,10 +267,8 @@ class Foveate_GP_OGL:
         image = Image.frombytes("RGB", (self.img_width,self.img_height), pixels)
         image = image.transpose(Image.FLIP_TOP_BOTTOM)
         self.imgFov = np.array(image) #[:,:,::-1] 
-        print(self.imgFov.shape)
 
     def run(self):
-
         if not self.visualize:
             if not glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE:
                 print('Error: Framebuffer binding failed!')
@@ -272,7 +285,7 @@ class Foveate_GP_OGL:
         glfw.poll_events()      
 
         if self.visualize:
-            time.sleep(0.5) 
+            time.sleep(2) 
 
     def foveate(self, img, gazePosition=(-1, -1)):
         self.loadImgFromArray(img)
@@ -287,7 +300,7 @@ def usage():
 def main():
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'hp:d:i:o:x:v', ['help','gazePosition', 'viewDist', 'pix2deg', 'inputDir', 'outputDir', 'visualize'])
+        opts, args = getopt.getopt(sys.argv[1:], 'hp:d:i:o:x:s:v', ['help','gazePosition', 'viewDist', 'pix2deg', 'inputDir', 'outputDir', 'inputSizeDeg', 'visualize'])
     except getopt.GetoptError as err:
         print(str(err))
         usage()
@@ -299,6 +312,9 @@ def main():
     inputDir = 'images'
     outputDir = ''
     saveOutput = False
+    pix2deg = None
+    inputSizeDeg = -1
+
 
     #TODO: add error checking for the arguments
     for o, a in opts:
@@ -313,13 +329,16 @@ def main():
             viewDist = float(a)
         if o in ['-x', '--pix2deg']:
             pix2deg = float(a)
+        if o in ['-s', '--inputSizeDeg']:
+            inputSizeDeg = float(a)
         if o in ['-i', '--inputDir']:
             inputDir = a
         if o in ['-o', '--outputDir']:
             outputDir = a
             saveOutput = True
 
-    fov_ogl = Foveate_GP_OGL(viewDist=viewDist, gazePosition=gazePosition, visualize=visualize)
+
+    fov_ogl = Foveate_GP_OGL(inputSizeDeg=inputSizeDeg, pix2deg=pix2deg, viewDist=viewDist, gazePosition=gazePosition, visualize=visualize)
 
     imageList = [f for f in listdir(inputDir) if any(f.endswith(ext) for ext in ['jpg', 'jpeg', 'bmp', 'png', 'gif']) ]
     
@@ -330,7 +349,7 @@ def main():
         fov_ogl.loadImgFromFile(imgFilename=join(inputDir, imgName))
         fov_ogl.run()
         if saveOutput:
-            fov_ogl.saveImage(join(outputDir, imgName))
+            fov_ogl.saveFovImage(join(outputDir, imgName))
 
     glfw.terminate()
 

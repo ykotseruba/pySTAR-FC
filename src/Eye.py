@@ -1,4 +1,5 @@
 import numpy as np
+import cv2
 
 class Eye:
     def __init__(self, settings, env):
@@ -13,7 +14,7 @@ class Eye:
 
         if self.foveate:
             from Foveate_GP_OGL import Foveate_GP_OGL
-            self.fov = Foveate_GP_OGL(dotPitch = -1, viewDist = settings.viewDist)
+            self.fov = Foveate_GP_OGL(dotPitch = self.env.dotPitch, viewDist = settings.viewDist)
 
             #uncomment to use the pyCUDA code
             #from Foveate import Foveate
@@ -30,8 +31,8 @@ class Eye:
         # if gazeCoords are not initialized (i.e. equal to [-1,1]) automatically set the first
         # fixation at the center of the image
         if np.all(np.equal(self.gazeCoords, [-1, -1])):
-            self.gazeCoords = np.array([self.height/2, self.width/2], dtype=np.int32)
-
+            self.gazeCoords = np.array([int(self.height/2), int(self.width/2)], dtype=np.int32)
+        print('[gazeCoords]', self.gazeCoords)
         self.view = self.env.getEyeView(self.gazeCoords)
         self.foveateView()
 
@@ -39,7 +40,7 @@ class Eye:
 
         if self.foveate:
             self.fov.dotPitch = self.env.dotPitch
-            self.fov.foveate(self.view, np.array([self.height/2, self.width/2], dtype=np.int32))
+            self.fov.foveate(self.view, np.array([int(self.height/2), int(self.width/2)], dtype=np.int32))
             self.viewFov = self.fov.imgFov
 
         else:

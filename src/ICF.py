@@ -1,9 +1,11 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
 from scipy.ndimage import zoom
-from scipy.misc import logsumexp, imsave
+from scipy.special import logsumexp
 import cv2
 import time
+
+tf.disable_eager_execution()
 
 class ICF:
     def __init__(self):

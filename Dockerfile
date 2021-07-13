@@ -1,4 +1,5 @@
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
+#FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:11.2.1-cudnn8-devel-ubuntu20.04
 
 ENV STARFCPY_ROOT="/opt/STAR-FC"
 
@@ -27,7 +28,6 @@ WORKDIR STARFCPY_ROOT
 # HACK: should install from requirements.txt file instead.
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
-RUN pip3 install pycuda==2017.1.1
 
 
 ENV PYTHONPATH=$STARFCPY_ROOT/contrib/SALICONtf/src/:$STARFCPY_ROOT/contrib/foveate_ogl/src/:$PYTHONPATH
