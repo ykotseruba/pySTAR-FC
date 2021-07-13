@@ -1,6 +1,7 @@
 # pySTAR-FC
 pySTAR-FC is an application for predicting human fixation locations on arbitrary static images.
-More details on the algorithm and results can be found in our CVPR'18 paper ["Active Fixation Control to Predict Saccade Sequences"](http://openaccess.thecvf.com/content_cvpr_2018/papers/Wloka_Active_Fixation_Control_CVPR_2018_paper.pdf).
+
+This is a Python re-implementation of [STAR-FC](https://github.com/TsotsosLab/STAR-FC) published in CVPR'18 paper ["Active Fixation Control to Predict Saccade Sequences"](http://openaccess.thecvf.com/content_cvpr_2018/papers/Wloka_Active_Fixation_Control_CVPR_2018_paper.pdf). Note that the Python version uses a faster OpenGL-based foveation therefore the results will be different from the ones in the paper.
 
 ![pySTAR-FC in action](examples/Yarbus.gif)
 
@@ -99,10 +100,10 @@ Should you have any questions, feel free to raise an issue or email yulia_k@eecs
 If you find our work useful in your research, please consider citing:
 
 ```latex
-@article{wloka2017saccade,
-  title={Saccade Sequence Prediction: Beyond Static Saliency Maps},
-  author={Wloka, Calden and Kotseruba, Iuliia and Tsotsos, John K},
-  journal={arXiv preprint arXiv:1711.10959},
-  year={2017}
+@InProceedings{Wloka_CVPR18,
+  author = {Wloka, Calden and Kotseruba, Iuliia and Tsotsos, J. K.},
+  title = {Saccade Sequence Prediction: Beyond Static Saliency Maps},
+  booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year = {2018}
 }
 ```

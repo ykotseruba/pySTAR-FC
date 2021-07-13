@@ -8,5 +8,9 @@ pycuda==2020.1
 PyOpenGL==3.1.5
 scikit-learn==0.24.1
 scipy==1.6.1
+tensorflow_gpu==2.5.0
+matplotlib==3.0.2
+numpy==1.16.1
+scipy==1.2.1
+Pillow==8.2.0
 selenium==3.141.0
-tensorflow-gpu==2.4.1
