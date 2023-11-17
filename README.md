@@ -1,7 +1,7 @@
 # pySTAR-FC
 pySTAR-FC is an application for predicting human fixation locations on arbitrary static images.
 
-This is a Python re-implementation of [STAR-FC](https://github.com/TsotsosLab/STAR-FC) published in CVPR'18 paper ["Active Fixation Control to Predict Saccade Sequences"](http://openaccess.thecvf.com/content_cvpr_2018/papers/Wloka_Active_Fixation_Control_CVPR_2018_paper.pdf). Note that the Python version uses a faster OpenGL-based foveation therefore the results will be different from the ones in the paper.
+This is a Python re-implementation of [STAR-FC](https://github.com/TsotsosLab/STAR-FC) published in CVPR'18 paper ["Active Fixation Control to Predict Saccade Sequences"](http://openaccess.thecvf.com/content_cvpr_2018/papers/Wloka_Active_Fixation_Control_CVPR_2018_paper.pdf). Note that the Python version uses a faster OpenGL-based foveation therefore it produces the results that are *different from the ones in the paper*.
 
 ![pySTAR-FC in action](examples/Yarbus.gif)
 
@@ -9,41 +9,57 @@ This is a Python re-implementation of [STAR-FC](https://github.com/TsotsosLab/ST
 
 ### Installation
 
-We tested this setup with NVIDIA Titan X on Ubuntu 16.04 and 20.04 with Python 3.5.
+This setup was tested with NVIDIA Titan X on Ubuntu 22.04 with Python 3.9.
 
-#### Docker (strongly recommended)
+#### Docker
 
-Install [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) following the instructions in the official repository. There are also good resources elsewhere that describe Docker installation in more detail, for example [this one for Ubuntu 16.04](https://chunml.github.io/ChunML.github.io/project/Installing-NVIDIA-Docker-On-Ubuntu-16.04/).
+Install docker following the instructions [here](https://docs.docker.com/engine/install/ubuntu/).
+
+<!-- Install [nvidia-docker](https://github.com/NVIDIA/nvidia-docker) following the instructions in the official repository. There are also good resources elsewhere that describe Docker installation in more detail, for example [this one for Ubuntu 16.04](https://chunml.github.io/ChunML.github.io/project/Installing-NVIDIA-Docker-On-Ubuntu-16.04/). -->
 
 Add your name to the docker group so you can run docker commands without sudo:
 ```
 usermod -aG docker <yourLoginUsername>
 ```
 
-After Docker is installed all you need to do is to build a container using the scripts in the ```docker_scripts``` folder:
+After Docker is installed all you need to do is to build a container using the scripts in the ```docker``` folder (may take 30+ mins):
 ```
 cd pySTAR-FC
-sh docker_scripts/build.sh
+sh docker/build_docker.sh
 ```
 
-NOTE: You will need to install the same GPU driver as in your system inside the container. ```docker_scripts/build.sh``` outputs the version of the driver on your system. Obtain the link for the ```.run``` file from [NVIDIA](https://www.nvidia.com/Download/index.aspx?lang=en-us) and replace the ```DRIVER_LINK``` in ```build.sh```. Or download the driver manually, place it into ```pySTAR-FC``` directory and rename the file to ```NVIDIA-DRIVER.run```.
+NOTE: To use OpenGL, you will need to install the same GPU driver as in your system inside the container. The ```docker/build_docker.sh``` script should handle this automatically. But if it fails, do the following:
 
-To run the container:
+1. Find your GPU driver version (run either `nvidia-smi` or ```DRIVER_VERSION=$(glxinfo | grep "OpenGL version string" | rev | cut -d" " -f1 | rev) ```). 
+
+2. Get the link for the ```.run``` file from [NVIDIA](https://www.nvidia.com/Download/index.aspx?lang=en-us) and download the driver.
+
+3. Place the `.run` file into the ```docker``` directory and rename the file to ```NVIDIA-DRIVER.run```.
+
+4. Run `docker/build_docker.sh` again.
+
+
+### Virtual environment
+
+Apt-get dependencies:
 
 ```
-sudo docker_scripts/run.sh -v -c <path_to_config_file>
+sudo apt-get install -y \
+    libglib2.0-dev libsm6 \
+    libglfw3-dev mesa-utils kmod
 ```
-There are only two command line options:
-* -v for visualization  (optional)
-* -c for config file in .ini format
 
-The code and files are mounted in `/opt/STAR-FC`, which you can edit from your host machine using your usual editor or from within the container. Remember that any files created within the container will belong to root, but there is no harm in `chown`ing them back to your host user.
-
-### Manual installation
+Python dependencies:
 
 ```
-pip3 install -r requirements.txt
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r docker/requirements.txt
+
 ```
+
+Depending on your system, you might need to install CUDA (v11.7.8) (https://developer.nvidia.com/cuda-toolkit-archive) and CuDNN (v8) (https://developer.nvidia.com/rdp/cudnn-archive).
+
 <!-- pip3 install pycuda==2017.1.1 -->
 
 
@@ -59,25 +75,35 @@ If you are getting 'pycuda._driver.Error: cuInit failed: unknown error' when run
 
 pySTAR-FC relies on several saliency models that also need to be installed.
 
-Download DeepGazeII and ICF models from [https://deepgaze.bethgelab.org/] and place the files into ```pySTAR_FC/contrib/DeepGazeII``` and ```pySTAR_FC/contrib/ICF``` folders respectively (only the checkpoint files (```ckpt.data```, ```ckpt.index``` and ```ckpt.meta```) and ```centerbias.npy``` for each model).
+Tensorflow versions of DeepGazeII and ICF are no longer available from [https://deepgaze.bethgelab.org/] and the webpage is not accessible anymore. 
 
-Download SALICONtf from [https://github.com/ykotseruba/SALICONtf] and place the files it in ```pySTAR-FC/contrib/SALICONtf```. Download pre-trained SALICONtf weights:
+1. Download the files from mirror at https://drive.google.com/file/d/1e2ktks8XOsjGWotFpE4GtXJNIjZxCyVd/view?usp=drive_link 
+
+2. Place checkpoint files (```ckpt.data```, ```ckpt.index``` and ```ckpt.meta```) into ```pySTAR_FC/contrib/DeepGazeII``` and ```pySTAR_FC/contrib/ICF``` folders respectively. 
+
+3. Copy ```centerbias.npy``` file into both `ICF` and `DeepGazeII` folders.
+
+<!-- Download SALICONtf from [https://github.com/ykotseruba/SALICONtf] and place the files it in ```pySTAR-FC/contrib/SALICONtf```. Download pre-trained SALICONtf weights:
 ```
 cd contrib/SALICONtf/models
 sh download_pretrained_weights.sh
 sh download_vgg_weights.sh
-```
+``` -->
 
 ## Running STAR-FC
 
-Below are instructions on how to run a demo of STAR-FC on a single image (```Yarbus_scaled.jpg``` in ```images``` folder).
+Below are instructions on how to run a demo of STAR-FC on a single image (```images/Yarbus_scaled.jpg```).
 
-If STAR-FC was build using the recommended Dockerfile, use the following command:
+If using Docker:
 ```
-sh docker_scripts/run.sh -v -c config_files/test.ini
+sh docker_scripts/run.sh 
+```
+Then inside Docker:
+```
+python3 src/STAR_FC.py -v -c config_files/test.ini
 ```
 
-Without Docker use the following command:
+Without Docker simply run:
 ```
 python3 src/STAR_FC.py -v -c config_files/test.ini
 ```
@@ -88,7 +114,8 @@ There are only two command line options available:
 
 All internal parameters of the algorihtm are set via configuration file (for available options and purpose of each parameter see example config file `config_files/template_config.ini`).
 
-Should you have any questions, feel free to raise an issue or email yulia_k@eecs.yorku.ca.
+Should you have any questions, feel free to raise an issue or email yulia84@yorku.ca.
+
 
 ### Authors
 

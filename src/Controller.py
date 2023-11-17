@@ -2,9 +2,6 @@ from os import listdir
 import os
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import matplotlib.gridspec as gridspec
 
 import time
 
@@ -15,6 +12,12 @@ from ConspicuityMap import ConspicuityMap
 from PriorityMap import PriorityMap
 from FixationHistoryMap import FixationHistoryMap
 from Eye import Eye
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import matplotlib.gridspec as gridspec
+
+plt.ion()
 
 class Controller:
     def __init__(self, settings):
@@ -138,12 +141,12 @@ class Controller:
             if self.settings.visualize:
                 t0 = time.time()
                 if i == 0:
-                    plt.close('all')
+                    #plt.close('all')
 
                     fig = plt.figure(1, figsize=(13,7), facecolor='white')
                     gs = gridspec.GridSpec(2, 3)
                     plt.show(block=False)
-                    plt.ion()
+                    
                 plt.clf()
                 axes = []
                 axes.append(self.add_subplot(fig, cv2.cvtColor(self.eye.viewFov, cv2.COLOR_BGR2RGB), 'Foveated View', gs[0,0]))
