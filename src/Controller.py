@@ -17,7 +17,6 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import matplotlib.gridspec as gridspec
 
-plt.ion()
 
 class Controller:
     def __init__(self, settings):
@@ -142,12 +141,12 @@ class Controller:
                 t0 = time.time()
                 if i == 0:
                     #plt.close('all')
-
+                    plt.ion()
                     fig = plt.figure(1, figsize=(13,7), facecolor='white')
                     gs = gridspec.GridSpec(2, 3)
-                    plt.show(block=False)
+                    plt.show()
                     
-                plt.clf()
+                fig.clf()
                 axes = []
                 axes.append(self.add_subplot(fig, cv2.cvtColor(self.eye.viewFov, cv2.COLOR_BGR2RGB), 'Foveated View', gs[0,0]))
                 axes.append(self.add_subplot(fig, self.periphMap.periphMap, 'Peripheral Map: ' + self.settings.PeriphSalAlgorithm, gs[0,1]))
@@ -158,7 +157,7 @@ class Controller:
                 fig.canvas.draw()
                 t_vis = time.time() - t0
                 print('[vis] Time elapsed {:0.03f}'.format(t_vis))
-
+                plt.pause(0.01)
 
     def add_subplot(self, fig, img, title, plot_idx):
         ax = fig.add_subplot(plot_idx)

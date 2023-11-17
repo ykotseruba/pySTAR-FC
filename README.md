@@ -45,7 +45,7 @@ Apt-get dependencies:
 
 ```
 sudo apt-get install -y \
-    libglib2.0-dev libsm6 \
+    libglib2.0-dev libsm6 python3-pyqt5 \
     libglfw3-dev mesa-utils kmod
 ```
 

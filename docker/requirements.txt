@@ -6,7 +6,6 @@ tensorflow==2.8.0
 protobuf==3.20.*
 matplotlib
 opencv-python==4.6.0.66
-pyqt5
 numpy
 scikit-learn
 scipy
