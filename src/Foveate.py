@@ -14,6 +14,8 @@ import scipy.io as sio
 import numpy as np
 import math
 import cv2
+import sys
+import os
 
 class Foveate:
     def __init__(self, dotPitch, viewDist, rodsAndCones):
@@ -350,7 +352,7 @@ class Foveate:
             self.imgFov = cv2.cvtColor(self.imgFov.astype(np.uint8), cv2.COLOR_YCrCb2BGR)
             self.imgFov = self.imgFov.astype(np.float32)
 
-        cv2.normalize(self.imgFov, self.imgFov, 0, 1, cv2.NORM_MINMAX)
+        #cv2.normalize(self.imgFov, self.imgFov, 0, 1, cv2.NORM_MINMAX)
 
 
     def foveate(self, img, gazePos):
@@ -405,3 +407,31 @@ class Foveate:
             np.multiply(x, y, out=y)
             y += p[i]
         return y.astype(np.float32)
+
+
+# run as 
+# python3 src/Foveate.py <img_path> <gaze_pos>
+# e.g.
+# python3 src/Foveate.py images/Yarbus_scaled.jpg 100,100
+if __name__ == '__main__':
+    img_path = sys.argv[1]
+    img = cv2.imread(img_path)
+
+    gaze_pos = [int(x) for x in sys.argv[2].split(',')]
+
+    viewDist = 0.60
+    inputSizeDeg = 45
+    rodsAndCones = True
+    
+    widthm = 2*viewDist*math.tan((inputSizeDeg*math.pi/180)/2)
+    dotPitch = widthm/img.shape[1]
+
+    fov = Foveate(dotPitch, viewDist, rodsAndCones)
+    fov.foveate(img, np.array(gaze_pos))
+    
+    fname, ext = os.path.splitext(img_path)
+    save_path = fname +'_fov'+ ext
+
+    imgFov = fov.imgFov
+
+    cv2.imwrite(save_path, imgFov.astype(np.uint8))
