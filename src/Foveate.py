@@ -390,7 +390,6 @@ class Foveate:
 
         func = self.kernel.get_function('interpolate_'+method+'_GPU')
 
-
         block = (4, 4, 4)
         grid = (self.img.shape[0], self.img.shape[1])
 
@@ -419,8 +418,8 @@ if __name__ == '__main__':
 
     gaze_pos = [int(x) for x in sys.argv[2].split(',')]
 
-    viewDist = 0.60
-    inputSizeDeg = 45
+    viewDist = 1
+    inputSizeDeg = 82
     rodsAndCones = True
     
     widthm = 2*viewDist*math.tan((inputSizeDeg*math.pi/180)/2)
@@ -434,4 +433,5 @@ if __name__ == '__main__':
 
     imgFov = fov.imgFov
 
+    #imgFov = cv2.circle(imgFov, (gaze_pos[1], gaze_pos[0]), 5, (0, 0, 255))
     cv2.imwrite(save_path, imgFov.astype(np.uint8))
