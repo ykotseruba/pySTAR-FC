@@ -77,7 +77,7 @@ pySTAR-FC relies on several saliency models that also need to be installed.
 
 Tensorflow versions of DeepGazeII and ICF are no longer available from [https://deepgaze.bethgelab.org/] and the webpage is not accessible anymore. 
 
-1. Download the files from mirror at https://drive.google.com/file/d/1e2ktks8XOsjGWotFpE4GtXJNIjZxCyVd/view?usp=drive_link 
+1. Download the files from the [Google Drive mirror](https://drive.google.com/file/d/19hGVm6TYxAWg5XAe5qifh0RHQ26N1kMn/view?usp=drive_link).
 
 2. Place checkpoint files (```ckpt.data```, ```ckpt.index``` and ```ckpt.meta```) into ```pySTAR_FC/contrib/DeepGazeII``` and ```pySTAR_FC/contrib/ICF``` folders respectively. 
 
