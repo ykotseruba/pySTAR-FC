@@ -2,7 +2,7 @@ glfw==2.0.0
 Keras==2.8.0
 pycuda==2022.1
 PyOpenGL==3.1.7
-tensorflow==2.8.0
+tensorflow==2.12.1
 protobuf==3.20.*
 matplotlib
 opencv-python==4.6.0.66
